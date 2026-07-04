@@ -1,0 +1,391 @@
+[32468536] edflsafoiewq:
+By far the biggest problem with reading a file in C is Microsoft's ill-conceived wide-char functions, _wfopen, etc. that produced decades of "ensure the path has no unicode characters" problems. Basically every C/C++ project has a wrapper to fix this. The good news is the bad days may be over soon, thanks to MS moving towards the Unix solution of using UTF8, as well as modern languages like Rust moving this stuff into the stdlib where you can't mess it up.
+
+---
+
+[32468109] bregma:
+The one single standard way to read a file in C. There are (potentially infinite) many non-standard ways using third-party vendored libraries or vendor-specific extensions to the standard C library. This article discusses a small subset of the latter, specific to a single vendor.
+
+---
+
+[32468285] atoav:
+As someone who uses mainly python, rust and js, as well as C on embedded. I recently came around reading The C Programming Language (2nd edition) and was surprised how many of the language decisions I found extremely horrible. I mean all the examples in the first chapter teach you how to do stuff with strings that will fail the moment you throw Unicode into the mix, and no programmer should use ASCII for any but the lowest level stuff today.I see this as a relic from older, nobler times and the language is interesting to learn about especially since it is the base of a lot of things, but if C was a sport it would be free climbing, or maybe something even more dangerous that requires a lot of skill that I can't think of now.In Rust there are many string types (e.g. OsString, CString, String, PathBuf, ..) because the truth is that you need to know the rules that the string your program reads or creates must adhere to, if there is no type system that will enforce those rules to you. The way a properly written program has to deal with strings in the different parts of systems could be explored in an entire programming career.Similarily Rust tends to make you handle all the errors that could occure with file I/O. This can feel complicated, but it could also serve as a reminder on how many potential errors we don't handle in other programming languages (or at least as a big questionmark how these other languages handle or don't handle these errors). Surely you could also ignore those error cases in Rust and just have your program crash, but then it was your active decision and not something that hit you out of nowhere like a bag of bricks, with the only realistic option of ignoring it and hoping it will not happen again.If anything something like Rust gave me a much better understanding why actual good C programs are akin to art. Freeclimbing in a minefield and all that.
+
+---
+
+[32468054] AlexanderDhoore:
+C has nothing to do with this. You'll have the same problems reading from Java.
+
+---
+
+[32468656] h2odragon:
+Alternate title: "I've chose to use a C stdlib which sucks on this OS"I dunno Z/OS, perhaps everything sucks that bad there. I strongly suspect that there's alternate interfaces available that hide this complexity from those afraid to trip over it.
+
+---
+
+[32467935] nemetroid:
+This seems to be about the z/OS C API.
+
+---
+
+[32468183] planede:
+This is the first time I saw "keyword arguments" in fopen's mode argument. I'm not a fan.https://www.ibm.com/docs/en/zos/2.4.0?topic=functions-fopen-...
+
+---
+
+[32467963] nuc1e0n:
+Man, IBM mainframe stuff is pretty messed up. Attribute splitting much?
+
+---
+
+[32467906] ale42:
+There's no intro about it, but this looks related to IBM mainframes...
+
+---
+
+[32468165] nuc1e0n:
+So what is the best practice for reading files from z/OS and OMVS? Should you: Look to see whether the file is binary or text, if it's text what encoding is it in and what is the record length (if there is one). Then open the file as binary and write wrappers for fread and fgets to do the necessary conversions yourself to utf-8 and unix newlines?BTW, fixed length records? Way old school and yuck. Just use an index into the file with lengths already. What about all the wasted space from records that aren't full?
+
+---
+
+[32470293] carapace:
+I've come around to the view that filesystems are idea whose time has passed, a relic or holdover or atavism from the era of small, slow machines.What you would like, I think, is something like git (or IPFS) where data is stored as content-addresses blobs and metadata (including filenames and directory structures) are also just blobs in the object store.
+
+---
+
+[32468043] aaaaaaaaaaab:
+Ew… I guess this is what 60 years of backwards compatibility looks like?
+
+---
+
+[32468787] mananaysiempre:
+This problem is as Microsoft-specific as the one in the head article is IBM-specific, C as a language has very little to do with it (especially given that Microsoft very quickly pivoted from supporting portable C to exclusively doing a Windows-specific dialect and then a tacit deprecation in favour of C++).There are also limits to how far the UTF-8 illusion can go on Windows: while on Unix and friends a path is fundamentally a 0x00-terminated, 0x2F-separated sequence of 8-bit quantities[1], on NT a path is fundamentally a(n unterminated) 0x005C-separated sequence of 16-bit quantities, and Win32 puts a varying number of layers of makeup[2] on that. Thus on Unix you must be prepared to handle invalid UTF-8 in a filename, but can expect to roundtrip any byte sequence (sans 0x00 and 0x2F), and on UTF-8 Win32 you must be prepared to handle arbitrary WTF-8[3] and cannot expect to roundtrip any byte sequence (isolated surrogates can merge, though I don’t know if UTF-8 Win32 is willing to accept such invalid WTF-8).Note that Rust does not use the UTF-8 interfaces on Windows (neither does it use the fundamental UNICODE_STRING APIs, however).[1] https://yarchive.net/comp/linux/case_insensitive_filenames.h... (of course, Linux filesystems have since developed case-insensitive mount options)[2] https://googleprojectzero.blogspot.com/2016/02/the-definitiv...[3] https://simonsapin.github.io/wtf-8/
+
+---
+
+[32468619] zokier:
+> The good news is the bad days may be over soon, thanks to MS moving towards the Unix solution of using UTF8, as well as modern languages like Rust moving this stuff into the stdlib where you can't mess it up.It's not all roses on unix or rust side either. In unix filenames are not utf-8, which leads rust having fun things like OsString.
+
+---
+
+[32468171] anonymoushn:
+What is the standard way?
+
+---
+
+[32468357] rmind:
+It is very easy to say, retrospectively, in year 2022, that the decisions were horrible. You are talking about the language and decisions made in 1970s. The knowledge was different. The computers were different, their capability was different. Try running your Python on PDP-7, an 18-bit system! ASCII vs EBCDIC is a computer architecture issue and it's unfair to blame the language that it doesn't have automatic/transparent support for EBCDIC (stuff from 1960s, by the way!). Unicode simply didn't exist at that time. And so on and so forth.On the contrary, I would say C aged really well for a language which was created to support an entire zoo of computers and operating systems. It is worth pointing out that the language has progressed a lot since then and you don't have to deal with many old headaches if you write C on a modern CPU architecture.
+
+---
+
+[32468465] SimplyUnknown:
+The first edition of the C programming language was released in 1978, the second version in 1988. The first time something on Unicode was mentioned was also 1988, and the consortium was founded in 1991. UTF-8 was proposed in 1992.Simply put, the book doesn't deal with alternatives to ASCII because there hardly were alternative text encodings at the time of writing in the western world, which is clearly the focus of an English book written by a Canadian and American.Moreover, the point of the book was to propose the C programming language and showcase how the language works. It's not a book on best practices or how to use C in the real world today. There are other resources for that.
+
+---
+
+[32468552] anonymoushn:
+The first program that may have some issue with UTF-8 seems to be on page 18. The trouble with writing a UTF-8 aware "character counting" program is that the definition of "character" is pretty complex. A "correct" program would not fit on one page, and would need to be updated as more emoji ligatures are added to the standard. It would perhaps be good to clarify that "character" means "byte" in this program.The line counting program on page 19 is correct for UTF-8 inputs. The word counting program on page 20 works as specified (the specification says it only uses 3 specific delimiters) for UTF-8 inputs. The digit counting program is correct for UTF-8 inputs. The "longest input line" program doesn't really specify what "longest" means, but it finds the one with the most bytes.There are maybe 2 examples that don't work on UTF-8, if the standard is that "longest line" and "character counting" programs should detect that ":regional_indicator_s::regional_indicator_u:" is 2 characters while ":regional_indicator_u::regional_indicator_s:" is 1 character. Such programs may not make a very good introduction to programming though.
+
+---
+
+[32468373] adhesive_wombat:
+> C was a sport it would be free climbingI think maybe motorcycle racing. Fast, close to the ground, and one seemingly-trivial mistake away from a gruesome result. But also a rush when it goes well, responsive to riders knowing their machines and the terrain inside and out and eligible for lucrative sponsorships.
+
+---
+
+[32470115] lelanthran:
+>  I recently came around reading The C Programming Language (2nd edition) and was surprised how many of the language decisions I found extremely horrible.  I mean all the examples in the first chapter teach you how to do stuff with strings that will fail the moment you throw Unicode into the mixDefine "fail" and define "Unicode".Does "fail" mean "iterates through bytes and not characters"? Does "fail" mean "can't recognise different encodings of the same 'character'"?Does "Unicode" mean UCS2, UTF-16, UTF-32 or UTF-8?Because, to be honest, quite a log of 'unicode-aware' languages will "faiol" the same way, and they don't have the same excuse as 'strlen()' does, namely being 35 plus years old.I think the fact that Unicode handling can still be such a mess in applications written on platforms and languages that came decades after C tells me that this is not an easy problem.C handles UTF-8 byte sequences with the current string functions just fine. You're going to have to manage the mapping between byte sequences and glyphs being displayed to the user, which you're going to have to manage anyway because "Unicode" is so ambiguous. Whatever support a modern language has for Unicode doesn't help all that much when the user-facing glyph isn't part of the language.What your language thinks is a character and what the end-user thinks is a character are two different things. C is not very different in this regard.
+
+---
+
+[32469406] icedchai:
+That book is well over 30 years old. Unicode was in the planning stages, but definitely not a thing yet. The decisions were "fine" for the time. This makes me feel even older, since I taught myself C with that book (and another, platform-specific, Amiga book) back when I was a teenager in the late 80's.
+
+---
+
+[32471365] ranger207:
+I learned C in a college class where we built a simulated computer from transistors up through assemble before moving to C. From that perspective the K&R C book is fantastically elegant: you can really see why C is sometimes described as a "portable assembly" because it maps closely to assembly instructions and conventions. As a first language above assembly, it's a fantastic language for doing work on limited systems. As a modern application language in the current world of high level abstractions like Unicode and the Internet, it's simply too simple. It was designed for and works relatively well for systems thst you understand completely all the way down to the metal
+
+---
+
+[32468398] nuc1e0n:
+By your logic, should z/OS not be used then because it is old and has quirks? EBCDIC is bizarre by modern standards. Non contiguous alphabet for instance.
+
+---
+
+[32468971] Joker_vD:
+I'd say it's just vastly different, and some rather basic assumptions C makes about the environment (basically that it's sorta kinda UNIX-y if you squint hard enough) simply don't hold.You can still see the UNIX-centric point of view in stdlibs of other languages: I am particularly amused by Golang's "os" package. It's kinda-sorta supposed to be portable and OS- and platform-independent, but it's designed for POSIX-likes first which is why one has to pass 0666 or whatever as permissions when trying to open a file on Windows (even though it is completely ignored).
+
+---
+
+[32468616] mananaysiempre:
+Glibc uses those as well[1], ccs=ENCODING opens a file in ENCODING for use with wchar_t functions (“CCS” for “coded character set” being prehistoric standardese for what I colloquially called an encoding here).I’m not a fan, either, FWIW, but those are the most frequent answer I’ve seen as to why fopen() accepts a string and not a set of flags like open(). Might be a post hoc rationalization, though,—I’m willing to believe it was originally just a hack for conciseness, for example.[1] https://www.gnu.org/software/libc/manual/html_node/Opening-S...
+
+---
+
+[32467933] jgtrosh:
+Yeah, it's tagged under “Z/OS”.
+Incomprehensible without context.
+
+---
+
+[32468866] Joker_vD:
+Well, what about all the wasted space from disk clusters that aren't full? IIRC, z/OS actually packs files densely, unlike cluster-based FSs.
+
+---
+
+[32472804] salawat:
+Filesystems are literally what it says on the tin. It is a filing system. Look in library and secretarial annals for the earliest foundational thinking from which computing's idea of filesystems were born. A systemization of behaviors and abstractions that facilitate the organization, addressing, and access of data.
+Go to any library, or talk to any long time/old school secretary or warden of archived paperwork, and I assure you, they will be happy to extoll the virtues of simple or reckonable information storage.A hierarchical data store comes baked in with an opportunity  of implementing topical locality for the end user, which allows you to utilize pathfinding logic baked into your brain to navigate the corpus of information in question. Content addressable stores, require praying that the layers of cryptography work, or you have enough understanding of the implementation details and tooling around the store to find what you need.In short, find | grep being strictly necessary, rather than a fallback, means you've failed at organizing things so your user can understand where the hell something even is, and why it is there.I assure you, more harm is done by forgetting the fundamental human way of life that computing tries to plaster over, as we inflict impedance mismatch on Users by forcing them to search in a way that makes sense only to the machine, rather than to them.Sometimes a little less ideal computational performance pays dividends in ease of picking up.
+
+---
+
+[32468880] Joker_vD:
+This is what trying to heave 50 years-old, backward compatible API on top of a completely differently designed, 60 years-old, backward compatible API looks like.
+
+---
+
+[32472252] nuc1e0n:
+AFAIK There are no UTF-8 specific interfaces on windows, only the system codepage (A) and Wide character (W) interfaces. Configuring the system codepage to be utf-8 is possible, but doesn't solve all encoding problems in my experience. To get the commandline without mangling you have to use the wide character function.Plus, you don't need to be prepared to handle invalid utf-8 in filenames on unix, the fopen call can just be made to fail if needed.
+
+---
+
+[32468849] jcranmer:
+On Unix, filenames are probably UTF-8. The kernel doesn't require them to be UTF-8, but if you're stuck trying to display a filename, you have to figure out what charset the filename is in, and UTF-8 is almost certainly the answer.
+
+---
+
+[32468441] phao:
+Using FILE*, fread, fgets, fscanf, ...
+
+---
+
+[32468372] oogali:
+I'd wager they are referring to the function named "read".
+
+---
+
+[32469130] pjmlp:
+On the surface that explanation might make sense, then we start diving into computer archeology and discovering what was being done outside Bell Labs with NEWP, JOVIAL, ALGOL variants, PL/I variants, BLISS, Mesa, Modula-2, PL.8, Lisp, Fortran,....Naturally it tends to be forgotten, as most UNIX folks set the genesis of computing world in Bell Labs.
+
+---
+
+[32469201] formerly_proven:
+> On the contrary, I would say C aged really well for a language which was created to support an entire zoo of computers and operating systems.This is the case only because the standardized C was more-or-less created as a superset of the many, many C variations that have sprung up until that point. It's also the reason why C leaves so many things up to the implementation or entirely undefined.Ultimately, this made C a highly portable language, while writing conformant and portable C programs is very difficult.
+
+---
+
+[32468688] atoav:
+I do not disagree with any point you made. Not at all.I just think an introduction to the language in the year 2022 should at least aknowledge that the form of string handling shown in the first part of the book should not be imitated. I can see how those examples would make perfect sense in a different age. Maybe I can give the book the benefit of the doubt as it was published in 2012.Do you have any book recommendations for a more modern C approach?
+
+---
+
+[32470716] jll29:
+...bungee jumping - where you have to make your own string
+
+---
+
+[32475362] Joker_vD:
+Both Cyrillic and Greek are non-contigious in Unicode, does it make Unicode bizarre by modern standards as well?
+
+---
+
+[32472531] salawat:
+>it's designed for POSIX-likes first which is why one has to pass 0666 or whatever as permissions when trying to open a file on WindowsWell. That's amusing. So everytime one does file access through Go on a windows machine, one invokes the number of the Beast, eh?Apropos af if true. Also hilarious if it just by chance worked out that way.
+
+---
+
+[32473217] carapace:
+I'm old enough to be familiar with non-computerized filing systems myself.  But I don't think there's a close match between computer files and directories and old-school hardcopy filing systems.But that's not really what I'm getting at.  I'm more thinking like POSIX API vs. Git plumbing API.> A hierarchical data store comes baked in with an opportunity of implementing topical locality for the end user, which allows you to utilize pathfinding logic baked into your brain to navigate the corpus of information in question.Most documents naturally fall into more than one hierarchy, and some "flat" patterns as well (e.g. alphabetical by author).One of the downsides of computer FS is that they encourage a single name-based hierarchy (although using symlinks or hardlinks you can reference files from several directories.)The hierarchy can and should be separate from the object store.  Then you can also use e.g. Jef Raskin's Zooming UI to organize topical locality, in addition to more traditional UIs like directory trees.
+
+---
+
+[32469844] lmz:
+Another example of putting C on top of a non-UNIX base would probably be VMS e.g. all the file options here (found using a search) http://odl.sysworks.biz/disk$axpdocdec971/progtool/deccv56/5...
+
+---
+
+[32471464] aaaaaaaaaaab:
+This sentence says it all:>“Normal files” have data in EBCDIC
+
+---
+
+[32473462] mananaysiempre:
+Right, by “UTF-8 Win32” I mean the *A Win32 functions (as used by the non-wide functions in the Microsoft C runtime) when a UTF-8 code page is active. Rust uses the *W ones instead.As being prepared for invalid UTF-8 on Unix, well, it depends. If you refuse to run with non-UTF-8 LC_CTYPE or to accept invalid UTF-8 in user-provided file names, I suppose that’s on you. (Though I sure hope you are not writing an implementation of rm or tar!) If you’re trying to erase or move everything in a directory, though, you’ll have to either deal with whatever’s there or at least recognize that the action may fail.
+
+---
+
+[32469796] jefftk:
+APIs don't do well with "probably".  For example, say you're working with a language (Python, Rust, etc) that distinguishes between utf-8 strings and byte strings.  You're making an API for listing a directory: it gives you an array of strings but what kind should they be?(Python's approach is that os.listdir("/") gives you a List[str] (silently omitting undecodable entries), while os.listdir(b"/") gives you a List[bytes].  That is, if you give the path as a utf-8 string it returns utf-8 strings, otherwise it returns bytes.)
+
+---
+
+[32468653] anonymoushn:
+That is in fact what he does in the article!
+
+---
+
+[32468402] anonymoushn:
+That doesn't seem to be part of the C standard library.
+
+---
+
+[32469215] Calavar:
+The 2nd Edition was published in 1988. I would guess that this this 2012 version just adds an extra foreword and some errata?
+
+---
+
+[32473342] SAI_Peregrinus:
+"Modern C" by Jens Gustedt is an excellent book on a more modern approach to C.
+
+---
+
+[32474156] adhesive_wombat:
+I'd say that's more true if you've been handed a strange new micro with a unique architecture and an untried toolchain.Make your rope as best you can but once you jump it's up to luck and whether the gods are feeling beneficent if you survive, and if you do, if you still have your limbs and retinas attached.
+
+---
+
+[32475292] Joker_vD:
+Well, as I said, you can pass pretty much whatever, none of those bits (except the owner-writeable bit) do anything because Windows uses a fundamentally different model of access control. And no, Golang's os.Create() passes 0666 to os.OpenFile [0], just as fopen(3) passes 0666 to creat(2) [1] on Linux as well.[0] https://cs.opensource.google/go/go/+/refs/tags/go1.19:src/os...[1] https://linux.die.net/man/3/fopen
+
+---
+
+[32475487] Joker_vD:
+Oh for the... we had non-hierarchical file systems already, thank you very much. It's what OS/360 used. It's what Apple Macintosh did (and yes, Macintosh Finder faked the hierarchy on top of it, just as you propose). And they're not gone, Amazon S3 essentially is one.And I remember that I half-jokingly proposed in some other discussion about file paths to either remove the filenames entirely or at least lift the uniqueness restriction: after all, if you have a GUI, files with the same name don't cause that much of a trouble.
+
+---
+
+[32488045] salawat:
+Symlinks are actually a tricky thing.  ln -s /a/long_contrived path/somewhere_else ./here
+  cd ./here # cwd somewhere_else
+  ls -al ../.. #list contents of /a
+  cd .. # cwd back to here (possibly shell-dependent)
+
+The joys of impedance mismatch, and the angst of more easily frustrated users everywhere.This is one of the many searching for data/pathing based things that trips up most users, without fail, who have better things to do with their lives than internalize the madness of software developers, necessitating people like me to clean up after you heathens when you shine a turd.Yes. Very shiny and efficient. Still a turd.We need to build things that intuitively map through things they are well equipped to deal with, which means sometimes stepping away from the screen for a while. Cognitive load is the enemy. Any idiot can make a more complicated system. It's about building and leveraging mental spaces, and being able to wire into a skill every other human being will share in their lifetime.We should endeavor to have computer use not condition the user in a maladaptive way to real life. I assure you, we've failed epically, even in or brightest moments.
+
+---
+
+[32475395] mek6800d2:
+But it works well!  Those file options are syntactically optional.  I worked on VAX/VMS with Fortran for 5 years and then helped develop generic spacecraft control-center software for NASA in C under Unix.  In 1992-1993, we ported the system to VAX/VMS for a European Space Agency project.  It went very smoothly and quickly, thanks to DEC's largely complete implementation of the C library (including BSD networking), leaving us with plenty of time to develop the project-specific software.  I ported over Sun's rpcgen and GNU's flex and cccp; plus bison or an actual yacc.  As you showed, some of the C calls have optional parameters; e.g., strerror() could take an additional argument, a VMS status code, that would provide a more specific error message than just the ERRNO-based messages.  However, in almost all cases, the normal Unix call signatures worked as expected.  (I did have to come up with a work-around for our one case of a network server using fork().)  Thumbs up on VMS and C!
+
+---
+
+[32470806] tialaramex:
+If it's an API for "listing a directory" the things in it aren't strings they're paths, and Rust indeed gives you Paths here (actually PathBufs in case you want to do stuff to them)Paths might just be strings, but they aren't necessarily, and since Rust actually cares about types if you want strings you need to write the code to decide what to do about this, even if your "It's not UTF-8" case is just "Give up I can't be bothered".
+
+---
+
+[32472087] nerdponx:
+Nitpick: Python strings are not "UTF-8"; they are abstract sequences of Unicode codepoints (and internally CPython stores UTF-32). However, UTF-8 is the default encoding for processing raw bytes received from the outside world and turning them into strings.That said, I actually didn't realize that os.listdir() silently omits un-decodable entries, which I find mildly alarming. This behavior isn't mentioned in the docs (https://docs.python.org/3/library/os.html#os.listdir) and seems out-of-character for Python, which usually raises an exception by default if data cannot be decoded to text.Are you sure that this is actually what happens with non-decodable filenames? Reading here (https://docs.python.org/3/glossary.html#term-filesystem-enco...) and here (https://docs.python.org/3/c-api/init_config.html#c.PyConfig....), it suggests that encoding errors should be handled by surrogate escapes by default on non-Windows systems.
+
+---
+
+[32470180] jcranmer:
+Honestly? Convince operating systems to have a switch that enforces UTF-8 path names, and then convince distros to flip that switch by default for new installs. That is to say, we need to move the world from a probably to a definitely state.The reality is that file names are "stringy" in nature--people expect to be able to do display them--and that means you need to have some up-front agreement on how to interpret those strings. In practice, on Unix systems, everyone has generally agreed that this is UTF-8, to the point that trying to not be UTF-8 generally causes interesting breaks in the system. It would be great if we could actually get the operating system to help enforce these rules, rather than placing the blame on other software for not correctly handling situations where the correct solution is itself incredibly ambiguous.
+
+---
+
+[32471527] naniwaduni:
+They should be byte (or 16-bit code unit, or whatever) strings. There is no ambiguity here, only incompatibility and delusion.Rust gets this almost right. Python gets this very wrong.
+
+---
+
+[32468739] phao:
+Right, but is he relying on the standard (the C language specification is an ISO standard, btw) behavior guaranteed by the language? Or is it talking about some implementation specific behavior that also happens to fall into the name of fopen, fread, etc?For C programmers, talking about "standard" implies a quite particular meaning.
+
+---
+
+[32475438] atoav:
+Ah that explains a lot thanks
+
+---
+
+[32471041] jefftk:
+Yes, Rust in keeping with its aesthetic resolves the "probably" in the most pessimistic direction, and requires you to explicitly say how you want to handle the potential for non-utf8.
+
+---
+
+[32473436] fabioz:
+Just as a note, the way that Python stores the items isn't always 4 bytes per char, it depends on the actual string contents.I think that https://rushter.com/blog/python-strings-and-memory/ is a nice reference on that.
+
+---
+
+[32472316] jefftk:
+I'm wrong: https://news.ycombinator.com/item?id=32471944If it ever did that, it doesn't anymore.
+
+---
+
+[32470344] Joker_vD:
+While I am all for an OS monoculture, it's still not there yet... and besides, my idea of what OS precisely must be the sole survivor is different from yours, and yours is different from somebody else's, etc.So I am afraid we can either a) indulge ourselves in wishful thinking, b) actively try to extinguish platforms that don't match our ideals, c) make an effort to be actually cross-platform, and not in "let's just build a tiny Linux model in a bottle for us to use and pretend the rest of the environment is not there" kind.
+
+---
+
+[32471715] tpolzer:
+You can use ZFS as a root file system, and it actually has such a switch (called "utf8only").
+
+---
+
+[32470533] jefftk:
+On a system with that switch flipped, what should happen if you plug in a USB drive or untar an archive that has non-utf8 filenames?
+
+---
+
+[32471616] jefftk:
+> Rust gets this almost right. Python gets this very wrong.Having worked in both, I'd say they both chose ideomatic solutions:Rust: I can't prove this is utf-8, so if you want to use it as utf-8 you'll need to tell me what to do if it isn't.Python: if you're in the common situation where everything is utf-8 and you want to just work with strings, go do the simple thing.  Or you can be explicit about wanting to work with bytes, and that's good too.(Though I think Python should throw an error instead of silently omitting non-utf8 files.)
+
+---
+
+[32468893] anonymoushn:
+I did not purchase a C standard from ISO, but a draft specifies that text streams and binary streams are both supported, and that text streams may perform all sorts of implementation-defined destruction on your data. Some small part of the article seems to be related to this.
+
+---
+
+[32477254] nerdponx:
+Interesting and good to know! CPython is really quite impressive with all of these little optimizations.
+
+---
+
+[32472574] jefftk:
+Found some history: https://vstinner.github.io/python30-listdir-undecodable-file...Includes "Modify os.listdir(str) to ignore silently undecodable filenames, instead of returning them as bytes", but not later work where apparently this was changed to use surrogates.
+
+---
+
+[32471810] deathanatos:
+For a legacy/broken FS that permits non-utf8 filenames, and has them: have the FS driver map them into UTF-8 as best it can by making some sort of compromise. E.g., use the PUA to map malformed sequences in/out.For untar'ing a tar archive: error out by default, but provide a flag or option to permit untarring using some sort of escaping to map the malformed names back into Unicode. I think here I'd map to something printable, though, like "\xnn" or something.
+
+---
+
+[32471944] jefftk:
+Actually, I think I'm wrong about python's behavior, at least now; it doesn't omit the files, and instead does something with surrogates.  On Linux:    >>> b'\xc0'.decode('utf-8')
+    Traceback (most recent call last):
+      File "", line 1, in 
+    UnicodeDecodeError: 'utf-8' codec can't decode byte 0xc0 in position 0: invalid start byte
+    >>> open(b'\xc0', 'w').write('foo')
+    3
+    >>> os.listdir()
+    ['\udcc0']
+    >>> open(b'\xc0').read()
+    'foo'
+    >>> open('\udcc0').read()
+    'foo'
+
+---
+
+[32472129] nerdponx:
+I just did a bit of research into this here https://news.ycombinator.com/item?id=32472087You can actually reconfigure Python to throw an error instead of using a surrogate escape, but only (I think) changing something at compile time: https://docs.python.org/3/library/sys.html#sys.getfilesystem...
+
+---
+
+[32472701] phao:
+About drafts...Iirc, the last draft before final publication is free and it's just as good.As another user replied, there is more going on in the post than what is specified, guaranteed, etc, by the standard.The practice of C programming in an actual system using non-standard things is important. Also, the C language does have its problems, even within the standard. However, pinning to C problems of a not-so-helpful implementation, library, system, etc, is unfair and unhelpful I believe.
+
+---
+
+[32472517] bregma:
+The streams discussed in the article are neither text nor binary. They're record-oriented files, which are not supported by the C language standard. Operations on record-oriented files are a vendor extension that work however the vendor says they work.On the other hand, record-oriented files work just peachy with ISO standard COBOL.
+
+---
+
+[32472170] naniwaduni:
+PEP 383[1] is a workaround, but it took a while to get there[2].[1]: https://peps.python.org/pep-0383/
+[2]: cf. https://github.com/bup/bup/blob/master/DESIGN#L667-L729

@@ -1,0 +1,823 @@
+{
+  "32467610": {
+    "by": "rcarmo",
+    "descendants": 75,
+    "id": 32467610,
+    "kids": [
+      32468536,
+      32468109,
+      32468285,
+      32468054,
+      32468656,
+      32467935,
+      32468183,
+      32467963,
+      32467906,
+      32468165,
+      32470293,
+      32468043,
+      32469340
+    ],
+    "score": 82,
+    "time": 1660556297,
+    "title": "There are many ways to fail to read a file in a C program",
+    "type": "story",
+    "url": "https://colinpaice.blog/2022/08/06/there-are-many-ways-to-fail-to-read-a-file-in-a-c-program/"
+  },
+  "32468536": {
+    "by": "edflsafoiewq",
+    "id": 32468536,
+    "kids": [
+      32468787,
+      32468619
+    ],
+    "parent": 32467610,
+    "text": "By far the biggest problem with reading a file in C is Microsoft&#x27;s ill-conceived wide-char functions, _wfopen, etc. that produced decades of &quot;ensure the path has no unicode characters&quot; problems. Basically every C&#x2F;C++ project has a wrapper to fix this. The good news is the bad days may be over soon, thanks to MS moving towards the Unix solution of using UTF8, as well as modern languages like Rust moving this stuff into the stdlib where you can&#x27;t mess it up.",
+    "time": 1660564516,
+    "type": "comment"
+  },
+  "32468109": {
+    "by": "bregma",
+    "id": 32468109,
+    "kids": [
+      32468171
+    ],
+    "parent": 32467610,
+    "text": "The one single <i>standard</i> way to read a file in C. There are (potentially infinite) many <i>non-standard</i> ways using third-party vendored libraries or vendor-specific extensions to the standard C library. This article discusses a small subset of the latter, specific to a single vendor.",
+    "time": 1660561071,
+    "type": "comment"
+  },
+  "32468285": {
+    "by": "atoav",
+    "id": 32468285,
+    "kids": [
+      32468357,
+      32468465,
+      32468552,
+      32468373,
+      32470115,
+      32469406,
+      32471365,
+      32468398
+    ],
+    "parent": 32467610,
+    "text": "As someone who uses mainly python, rust and js, as well as C on embedded. I recently came around reading <i>The C Programming Language</i> (2nd edition) and was surprised how <i>many</i> of the language decisions I found extremely horrible. I mean all the examples in the first chapter teach you how to do stuff with strings that will fail the moment you throw Unicode into the mix, and <i>no</i> programmer should use ASCII for any but the lowest level stuff today.<p>I see this as a relic from older, nobler times and the language is interesting to learn about especially since it is the base of a lot of things, but if C was a sport it would be free climbing, or maybe something even more dangerous that requires a lot of skill that I can&#x27;t think of now.<p>In Rust there are many string types (e.g. OsString, CString, String, PathBuf, ..) because the truth is that <i>you</i> need to know the rules that the string your program reads or creates must adhere to, if there is no type system that will enforce those rules to you. The way a properly written program has to deal with strings in the different parts of systems could be explored in an entire programming career.<p>Similarily Rust tends to make you handle all the errors that could occure with file I&#x2F;O. This can feel complicated, but it could also serve as a reminder on how many potential errors we don&#x27;t handle in other programming languages (or at least as a big questionmark how these other languages handle or don&#x27;t handle these errors). Surely you <i>could</i> also ignore those error cases in Rust and just have your program crash, but then it was <i>your</i> active decision and not something that hit you out of nowhere like a bag of bricks, with the only realistic option of ignoring it and hoping it will not happen again.<p>If anything something like Rust gave me a much better understanding why actual good C programs are akin to art. Freeclimbing in a minefield and all that.",
+    "time": 1660562642,
+    "type": "comment"
+  },
+  "32468054": {
+    "by": "AlexanderDhoore",
+    "id": 32468054,
+    "parent": 32467610,
+    "text": "C has nothing to do with this. You&#x27;ll have the same problems reading from Java.",
+    "time": 1660560439,
+    "type": "comment"
+  },
+  "32468656": {
+    "by": "h2odragon",
+    "id": 32468656,
+    "kids": [
+      32468971
+    ],
+    "parent": 32467610,
+    "text": "Alternate title: &quot;I&#x27;ve chose to use a C stdlib which sucks on this OS&quot;<p>I dunno Z&#x2F;OS, perhaps everything sucks that bad there. I strongly suspect that there&#x27;s alternate interfaces available that hide this complexity from those afraid to trip over it.",
+    "time": 1660565518,
+    "type": "comment"
+  },
+  "32467935": {
+    "by": "nemetroid",
+    "id": 32467935,
+    "parent": 32467610,
+    "text": "This seems to be about the z&#x2F;OS C API.",
+    "time": 1660559341,
+    "type": "comment"
+  },
+  "32468183": {
+    "by": "planede",
+    "id": 32468183,
+    "kids": [
+      32468616
+    ],
+    "parent": 32467610,
+    "text": "This is the first time I saw &quot;keyword arguments&quot; in fopen&#x27;s mode argument. I&#x27;m not a fan.<p><a href=\"https:&#x2F;&#x2F;www.ibm.com&#x2F;docs&#x2F;en&#x2F;zos&#x2F;2.4.0?topic=functions-fopen-open-file\" rel=\"nofollow\">https:&#x2F;&#x2F;www.ibm.com&#x2F;docs&#x2F;en&#x2F;zos&#x2F;2.4.0?topic=functions-fopen-...</a>",
+    "time": 1660561722,
+    "type": "comment"
+  },
+  "32467963": {
+    "by": "nuc1e0n",
+    "id": 32467963,
+    "parent": 32467610,
+    "text": "Man, IBM mainframe stuff is pretty messed up. Attribute splitting much?",
+    "time": 1660559545,
+    "type": "comment"
+  },
+  "32467906": {
+    "by": "ale42",
+    "id": 32467906,
+    "kids": [
+      32467933
+    ],
+    "parent": 32467610,
+    "text": "There&#x27;s no intro about it, but this looks related to IBM mainframes...",
+    "time": 1660559111,
+    "type": "comment"
+  },
+  "32468165": {
+    "by": "nuc1e0n",
+    "id": 32468165,
+    "kids": [
+      32468866
+    ],
+    "parent": 32467610,
+    "text": "So what is the best practice for reading files from z&#x2F;OS and OMVS? Should you: Look to see whether the file is binary or text, if it&#x27;s text what encoding is it in and what is the record length (if there is one). Then open the file as binary and write wrappers for fread and fgets to do the necessary conversions yourself to utf-8 and unix newlines?<p>BTW, fixed length records? Way old school and yuck. Just use an index into the file with lengths already. What about all the wasted space from records that aren&#x27;t full?",
+    "time": 1660561531,
+    "type": "comment"
+  },
+  "32470293": {
+    "by": "carapace",
+    "id": 32470293,
+    "kids": [
+      32472804
+    ],
+    "parent": 32467610,
+    "text": "I&#x27;ve come around to the view that filesystems are idea whose time has passed, a relic or holdover or atavism from the era of small, slow machines.<p>What you would like, I think, is something like git (or IPFS) where data is stored as content-addresses blobs and metadata (including filenames and directory structures) are also just blobs in the object store.",
+    "time": 1660574516,
+    "type": "comment"
+  },
+  "32468043": {
+    "by": "aaaaaaaaaaab",
+    "id": 32468043,
+    "kids": [
+      32468880
+    ],
+    "parent": 32467610,
+    "text": "Ew\u2026 I guess this is what 60 years of backwards compatibility looks like?",
+    "time": 1660560258,
+    "type": "comment"
+  },
+  "32469340": {
+    "deleted": true,
+    "id": 32469340,
+    "parent": 32467610,
+    "time": 1660569885,
+    "type": "comment"
+  },
+  "32468787": {
+    "by": "mananaysiempre",
+    "id": 32468787,
+    "kids": [
+      32472252
+    ],
+    "parent": 32468536,
+    "text": "This problem is as Microsoft-specific as the one in the head article is IBM-specific, C as a language has very little to do with it (especially given that Microsoft very quickly pivoted from supporting portable C to exclusively doing a Windows-specific dialect and then a tacit deprecation in favour of C++).<p>There are also limits to how far the UTF-8 illusion can go on Windows: while on Unix and friends a path is fundamentally a 0x00-terminated, 0x2F-separated sequence of 8-bit quantities[1], on NT a path is fundamentally a(n unterminated) 0x005C-separated sequence of 16-bit quantities, and Win32 puts a varying number of layers of makeup[2] on that. Thus on Unix you must be prepared to handle invalid UTF-8 in a filename, but can expect to roundtrip any byte sequence (sans 0x00 and 0x2F), and on UTF-8 Win32 you must be prepared to handle arbitrary WTF-8[3] <i>and</i> cannot expect to roundtrip any byte sequence (isolated surrogates can merge, though I don\u2019t know if UTF-8 Win32 is willing to accept such invalid WTF-8).<p>Note that Rust does <i>not</i> use the UTF-8 interfaces on Windows (neither does it use the fundamental UNICODE_STRING APIs, however).<p>[1] <a href=\"https:&#x2F;&#x2F;yarchive.net&#x2F;comp&#x2F;linux&#x2F;case_insensitive_filenames.html\" rel=\"nofollow\">https:&#x2F;&#x2F;yarchive.net&#x2F;comp&#x2F;linux&#x2F;case_insensitive_filenames.h...</a> (of course, Linux filesystems have since developed case-insensitive mount options)<p>[2] <a href=\"https:&#x2F;&#x2F;googleprojectzero.blogspot.com&#x2F;2016&#x2F;02&#x2F;the-definitive-guide-on-win32-to-nt.html\" rel=\"nofollow\">https:&#x2F;&#x2F;googleprojectzero.blogspot.com&#x2F;2016&#x2F;02&#x2F;the-definitiv...</a><p>[3] <a href=\"https:&#x2F;&#x2F;simonsapin.github.io&#x2F;wtf-8&#x2F;\" rel=\"nofollow\">https:&#x2F;&#x2F;simonsapin.github.io&#x2F;wtf-8&#x2F;</a>",
+    "time": 1660566398,
+    "type": "comment"
+  },
+  "32468619": {
+    "by": "zokier",
+    "id": 32468619,
+    "kids": [
+      32468849
+    ],
+    "parent": 32468536,
+    "text": "&gt; The good news is the bad days may be over soon, thanks to MS moving towards the Unix solution of using UTF8, as well as modern languages like Rust moving this stuff into the stdlib where you can&#x27;t mess it up.<p>It&#x27;s not all roses on unix or rust side either. In unix filenames are <i>not</i> utf-8, which leads rust having fun things like OsString.",
+    "time": 1660565222,
+    "type": "comment"
+  },
+  "32468171": {
+    "by": "anonymoushn",
+    "id": 32468171,
+    "kids": [
+      32468267,
+      32468441,
+      32468372,
+      32468264,
+      32468268
+    ],
+    "parent": 32468109,
+    "text": "What is the standard way?",
+    "time": 1660561595,
+    "type": "comment"
+  },
+  "32468357": {
+    "by": "rmind",
+    "id": 32468357,
+    "kids": [
+      32469130,
+      32469201,
+      32468688
+    ],
+    "parent": 32468285,
+    "text": "It is very easy to say, retrospectively, in year 2022, that the decisions were horrible. You are talking about the language and decisions made in 1970s. The knowledge was different. The computers were different, their capability was different. Try running your Python on PDP-7, an 18-bit system! ASCII vs EBCDIC is a computer architecture issue and it&#x27;s unfair to blame the language that it doesn&#x27;t have automatic&#x2F;transparent support for EBCDIC (stuff from 1960s, by the way!). Unicode simply didn&#x27;t exist at that time. And so on and so forth.<p>On the contrary, I would say C aged really well for a language which was created to support an entire zoo of computers and operating systems. It is worth pointing out that the language has progressed a lot since then and you don&#x27;t have to deal with many old headaches if you write C on a <i>modern</i> CPU architecture.",
+    "time": 1660563341,
+    "type": "comment"
+  },
+  "32468465": {
+    "by": "SimplyUnknown",
+    "id": 32468465,
+    "parent": 32468285,
+    "text": "The first edition of the C programming language was released in 1978, the second version in 1988. The first time something on Unicode was mentioned was also 1988, and the consortium was founded in 1991. UTF-8 was proposed in 1992.<p>Simply put, the book doesn&#x27;t deal with alternatives to ASCII because there hardly were alternative text encodings at the time of writing in the western world, which is clearly the focus of an English book written by a Canadian and American.<p>Moreover, the point of the book was to propose the C programming language and showcase how the language works. It&#x27;s not a book on best practices or how to use C in the real world today. There are other resources for that.",
+    "time": 1660564135,
+    "type": "comment"
+  },
+  "32468552": {
+    "by": "anonymoushn",
+    "id": 32468552,
+    "parent": 32468285,
+    "text": "The first program that may have some issue with UTF-8 seems to be on page 18. The trouble with writing a UTF-8 aware &quot;character counting&quot; program is that the definition of &quot;character&quot; is pretty complex. A &quot;correct&quot; program would not fit on one page, and would need to be updated as more emoji ligatures are added to the standard. It would perhaps be good to clarify that &quot;character&quot; means &quot;byte&quot; in this program.<p>The line counting program on page 19 is correct for UTF-8 inputs. The word counting program on page 20 works as specified (the specification says it only uses 3 specific delimiters) for UTF-8 inputs. The digit counting program is correct for UTF-8 inputs. The &quot;longest input line&quot; program doesn&#x27;t really specify what &quot;longest&quot; means, but it finds the one with the most bytes.<p>There are maybe 2 examples that don&#x27;t work on UTF-8, if the standard is that &quot;longest line&quot; and &quot;character counting&quot; programs should detect that &quot;:regional_indicator_s::regional_indicator_u:&quot; is 2 characters while &quot;:regional_indicator_u::regional_indicator_s:&quot; is 1 character. Such programs may not make a very good introduction to programming though.",
+    "time": 1660564757,
+    "type": "comment"
+  },
+  "32468373": {
+    "by": "adhesive_wombat",
+    "id": 32468373,
+    "kids": [
+      32470716
+    ],
+    "parent": 32468285,
+    "text": "&gt; C was a sport it would be free climbing<p>I think maybe motorcycle racing. Fast, close to the ground, and one seemingly-trivial mistake away from a gruesome result. But also a rush when it goes well, responsive to riders knowing their machines and the terrain inside and out and eligible for lucrative sponsorships.",
+    "time": 1660563424,
+    "type": "comment"
+  },
+  "32470115": {
+    "by": "lelanthran",
+    "id": 32470115,
+    "parent": 32468285,
+    "text": "&gt;  I recently came around reading The C Programming Language (2nd edition) and was surprised how many of the language decisions I found extremely horrible.  I mean all the examples in the first chapter teach you how to do stuff with strings that will fail the moment you throw Unicode into the mix<p>Define &quot;fail&quot; and define &quot;Unicode&quot;.<p>Does &quot;fail&quot; mean <i>&quot;iterates through bytes and not characters&quot;</i>? Does &quot;fail&quot; mean <i>&quot;can&#x27;t recognise different encodings of the same &#x27;character&#x27;&quot;</i>?<p>Does &quot;Unicode&quot; mean UCS2, UTF-16, UTF-32 or UTF-8?<p>Because, to be honest, quite a log of &#x27;unicode-aware&#x27; languages will &quot;faiol&quot; the same way, and they don&#x27;t have the same excuse as &#x27;strlen()&#x27; does, namely being 35 plus years old.<p>I think the fact that Unicode handling can still be such a mess in applications written on platforms and languages that came decades after C tells me that this is not an easy problem.<p>C handles UTF-8 byte sequences with the current string functions just fine. You&#x27;re going to have to manage the mapping between byte sequences and glyphs being displayed to the user, which you&#x27;re going to have to manage anyway because &quot;Unicode&quot; is so ambiguous. Whatever support a modern language has for Unicode doesn&#x27;t help all that much when the user-facing glyph isn&#x27;t part of the language.<p>What your language thinks is a character and what the end-user thinks is a character are two different things. C is not very different in this regard.",
+    "time": 1660573702,
+    "type": "comment"
+  },
+  "32469406": {
+    "by": "icedchai",
+    "id": 32469406,
+    "parent": 32468285,
+    "text": "That book is well over 30 years old. Unicode was in the planning stages, but definitely not a thing yet. The decisions were &quot;fine&quot; for the time. This makes me feel even older, since I taught myself C with that book (and another, platform-specific, Amiga book) back when I was a teenager in the late 80&#x27;s.",
+    "time": 1660570181,
+    "type": "comment"
+  },
+  "32471365": {
+    "by": "ranger207",
+    "id": 32471365,
+    "parent": 32468285,
+    "text": "I learned C in a college class where we built a simulated computer from transistors up through assemble before moving to C. From that perspective the K&amp;R C book is fantastically elegant: you can really see why C is sometimes described as a &quot;portable assembly&quot; because it maps closely to assembly instructions and conventions. As a first language above assembly, it&#x27;s a fantastic language for doing work on limited systems. As a modern application language in the current world of high level abstractions like Unicode and the Internet, it&#x27;s simply too simple. It was designed for and works relatively well for systems thst you understand completely all the way down to the metal",
+    "time": 1660579184,
+    "type": "comment"
+  },
+  "32468398": {
+    "by": "nuc1e0n",
+    "id": 32468398,
+    "kids": [
+      32475362
+    ],
+    "parent": 32468285,
+    "text": "By your logic, should z&#x2F;OS not be used then because it is old and has quirks? EBCDIC is <i>bizarre</i> by modern standards. Non contiguous alphabet for instance.",
+    "time": 1660563657,
+    "type": "comment"
+  },
+  "32468971": {
+    "by": "Joker_vD",
+    "id": 32468971,
+    "kids": [
+      32472531
+    ],
+    "parent": 32468656,
+    "text": "I&#x27;d say it&#x27;s just vastly different, and some rather basic assumptions C makes about the environment (basically that it&#x27;s sorta kinda UNIX-y if you squint hard enough) simply don&#x27;t hold.<p>You can still see the UNIX-centric point of view in stdlibs of other languages: I am particularly amused by Golang&#x27;s &quot;os&quot; package. It&#x27;s kinda-sorta supposed to be portable and OS- and platform-independent, but it&#x27;s designed for POSIX-likes first which is why one has to pass 0666 or whatever as permissions when trying to open a file on Windows (even though it is completely ignored).",
+    "time": 1660567563,
+    "type": "comment"
+  },
+  "32468616": {
+    "by": "mananaysiempre",
+    "id": 32468616,
+    "kids": [
+      32469242
+    ],
+    "parent": 32468183,
+    "text": "Glibc uses those as well[1], ccs=ENCODING opens a file in ENCODING for use with wchar_t functions (\u201cCCS\u201d for \u201ccoded character set\u201d being prehistoric standardese for what I colloquially called an encoding here).<p>I\u2019m not a fan, either, FWIW, but those are the most frequent answer I\u2019ve seen as to why fopen() accepts a string and not a set of flags like open(). Might be a post hoc rationalization, though,\u2014I\u2019m willing to believe it was originally just a hack for conciseness, for example.<p>[1] <a href=\"https:&#x2F;&#x2F;www.gnu.org&#x2F;software&#x2F;libc&#x2F;manual&#x2F;html_node&#x2F;Opening-Streams.html\" rel=\"nofollow\">https:&#x2F;&#x2F;www.gnu.org&#x2F;software&#x2F;libc&#x2F;manual&#x2F;html_node&#x2F;Opening-S...</a>",
+    "time": 1660565200,
+    "type": "comment"
+  },
+  "32467933": {
+    "by": "jgtrosh",
+    "id": 32467933,
+    "parent": 32467906,
+    "text": "Yeah, it&#x27;s tagged under \u201cZ&#x2F;OS\u201d.\nIncomprehensible without context.",
+    "time": 1660559309,
+    "type": "comment"
+  },
+  "32468866": {
+    "by": "Joker_vD",
+    "id": 32468866,
+    "parent": 32468165,
+    "text": "Well, what about all the wasted space from disk clusters that aren&#x27;t full? IIRC, z&#x2F;OS actually packs files densely, unlike cluster-based FSs.",
+    "time": 1660566900,
+    "type": "comment"
+  },
+  "32472804": {
+    "by": "salawat",
+    "id": 32472804,
+    "kids": [
+      32473217
+    ],
+    "parent": 32470293,
+    "text": "Filesystems are literally what it says on the tin. It is a <i>filing system</i>. Look in library and secretarial annals for the earliest foundational thinking from which computing&#x27;s idea of filesystems were born. A systemization of behaviors and abstractions that facilitate the organization, addressing, and access of data.\nGo to any library, or talk to any long time&#x2F;old school secretary or warden of archived paperwork, and I assure you, they will be happy to extoll the virtues of simple or reckonable information storage.<p>A hierarchical data store comes baked in with an opportunity  of implementing topical locality for the end user, which allows you to utilize pathfinding logic baked into your brain to navigate the corpus of information in question. Content addressable stores, require praying that the layers of cryptography work, or you have enough understanding of the implementation details and tooling around the store to find what you need.<p>In short, find | grep being strictly necessary, rather than a fallback, means you&#x27;ve failed at organizing things so your user can understand where the hell something even is, and why it is there.<p>I assure you, more harm is done by forgetting the fundamental human way of life that computing tries to plaster over, as we inflict impedance mismatch on Users by forcing them to search in a way that makes sense only to the machine, rather than to them.<p>Sometimes a little less ideal computational performance pays dividends in ease of picking up.",
+    "time": 1660585236,
+    "type": "comment"
+  },
+  "32468880": {
+    "by": "Joker_vD",
+    "id": 32468880,
+    "kids": [
+      32469844,
+      32471464
+    ],
+    "parent": 32468043,
+    "text": "This is what trying to heave 50 years-old, backward compatible API on top of a completely differently designed, 60 years-old, backward compatible API looks like.",
+    "time": 1660567028,
+    "type": "comment"
+  },
+  "32472252": {
+    "by": "nuc1e0n",
+    "id": 32472252,
+    "kids": [
+      32473462
+    ],
+    "parent": 32468787,
+    "text": "AFAIK There are no UTF-8 specific interfaces on windows, only the system codepage (<i>A) and Wide character (</i>W) interfaces. Configuring the system codepage to be utf-8 is possible, but doesn&#x27;t solve all encoding problems in my experience. To get the commandline without mangling you have to use the wide character function.<p>Plus, you don&#x27;t need to be prepared to handle invalid utf-8 in filenames on unix, the fopen call can just be made to fail if needed.",
+    "time": 1660582793,
+    "type": "comment"
+  },
+  "32468849": {
+    "by": "jcranmer",
+    "id": 32468849,
+    "kids": [
+      32469796
+    ],
+    "parent": 32468619,
+    "text": "On Unix, filenames are <i>probably</i> UTF-8. The kernel doesn&#x27;t require them to be UTF-8, but if you&#x27;re stuck trying to display a filename, you have to figure out what charset the filename is in, and UTF-8 is almost certainly the answer.",
+    "time": 1660566793,
+    "type": "comment"
+  },
+  "32468267": {
+    "deleted": true,
+    "id": 32468267,
+    "parent": 32468171,
+    "time": 1660562386,
+    "type": "comment"
+  },
+  "32468441": {
+    "by": "phao",
+    "id": 32468441,
+    "kids": [
+      32468653
+    ],
+    "parent": 32468171,
+    "text": "Using FILE*, fread, fgets, fscanf, ...",
+    "time": 1660564011,
+    "type": "comment"
+  },
+  "32468372": {
+    "by": "oogali",
+    "id": 32468372,
+    "kids": [
+      32468402
+    ],
+    "parent": 32468171,
+    "text": "I&#x27;d wager they are referring to the function named &quot;read&quot;.",
+    "time": 1660563419,
+    "type": "comment"
+  },
+  "32468264": {
+    "deleted": true,
+    "id": 32468264,
+    "parent": 32468171,
+    "time": 1660562376,
+    "type": "comment"
+  },
+  "32468268": {
+    "deleted": true,
+    "id": 32468268,
+    "parent": 32468171,
+    "time": 1660562397,
+    "type": "comment"
+  },
+  "32469130": {
+    "by": "pjmlp",
+    "id": 32469130,
+    "parent": 32468357,
+    "text": "On the surface that explanation might make sense, then we start diving into computer archeology and discovering what was being done outside Bell Labs with NEWP, JOVIAL, ALGOL variants, PL&#x2F;I variants, BLISS, Mesa, Modula-2, PL.8, Lisp, Fortran,....<p>Naturally it tends to be forgotten, as most UNIX folks set the genesis of computing world in Bell Labs.",
+    "time": 1660568467,
+    "type": "comment"
+  },
+  "32469201": {
+    "by": "formerly_proven",
+    "id": 32469201,
+    "parent": 32468357,
+    "text": "&gt; On the contrary, I would say C aged really well for a language which was created to support an entire zoo of computers and operating systems.<p>This is the case only because the standardized C was more-or-less created as a superset of the many, many C variations that have sprung up until that point. It&#x27;s also the reason why C leaves so many things up to the implementation or entirely undefined.<p>Ultimately, this made C a highly portable language, while writing conformant and portable C programs is very difficult.",
+    "time": 1660569034,
+    "type": "comment"
+  },
+  "32468688": {
+    "by": "atoav",
+    "id": 32468688,
+    "kids": [
+      32469215,
+      32473342
+    ],
+    "parent": 32468357,
+    "text": "I do not disagree with any point you made. Not at all.<p>I just think an introduction to the language in the year 2022 should at least aknowledge that the form of string handling shown in the first part of the book should not be imitated. I can see how those examples would make perfect sense in a different age. Maybe I can give the book the benefit of the doubt as it was published in 2012.<p>Do you have any book recommendations for a more modern C approach?",
+    "time": 1660565842,
+    "type": "comment"
+  },
+  "32470716": {
+    "by": "jll29",
+    "id": 32470716,
+    "kids": [
+      32474156
+    ],
+    "parent": 32468373,
+    "text": "...bungee jumping - where you have to make your own string",
+    "time": 1660576363,
+    "type": "comment"
+  },
+  "32475362": {
+    "by": "Joker_vD",
+    "id": 32475362,
+    "parent": 32468398,
+    "text": "Both Cyrillic and Greek are non-contigious in Unicode, does it make Unicode bizarre by modern standards as well?",
+    "time": 1660597525,
+    "type": "comment"
+  },
+  "32472531": {
+    "by": "salawat",
+    "id": 32472531,
+    "kids": [
+      32475292
+    ],
+    "parent": 32468971,
+    "text": "&gt;it&#x27;s designed for POSIX-likes first which is why one has to pass 0666 or whatever as permissions when trying to open a file on Windows<p>&lt;Snicker&gt;<p>Well. That&#x27;s amusing. So everytime one does file access through Go on a windows machine, one invokes the number of the Beast, eh?<p>Apropos af if true. Also hilarious if it just by chance worked out that way.",
+    "time": 1660584114,
+    "type": "comment"
+  },
+  "32469242": {
+    "deleted": true,
+    "id": 32469242,
+    "parent": 32468616,
+    "time": 1660569322,
+    "type": "comment"
+  },
+  "32473217": {
+    "by": "carapace",
+    "id": 32473217,
+    "kids": [
+      32475487,
+      32488045
+    ],
+    "parent": 32472804,
+    "text": "I&#x27;m old enough to be familiar with non-computerized filing systems myself.  But I don&#x27;t think there&#x27;s a close match between computer files and directories and old-school hardcopy filing systems.<p>But that&#x27;s not really what I&#x27;m getting at.  I&#x27;m more thinking like POSIX API vs. Git plumbing API.<p>&gt; A hierarchical data store comes baked in with an opportunity of implementing topical locality for the end user, which allows you to utilize pathfinding logic baked into your brain to navigate the corpus of information in question.<p>Most documents naturally fall into more than one hierarchy, and some &quot;flat&quot; patterns as well (e.g. alphabetical by author).<p>One of the downsides of computer FS is that they encourage a single name-based hierarchy (although using symlinks or hardlinks you can reference files from several directories.)<p>The hierarchy can and should be separate from the object store.  Then you can also use e.g. Jef Raskin&#x27;s Zooming UI to organize topical locality, in addition to more traditional UIs like directory trees.",
+    "time": 1660587024,
+    "type": "comment"
+  },
+  "32469844": {
+    "by": "lmz",
+    "id": 32469844,
+    "kids": [
+      32475395
+    ],
+    "parent": 32468880,
+    "text": "Another example of putting C on top of a non-UNIX base would probably be VMS e.g. all the file options here (found using a search) <a href=\"http:&#x2F;&#x2F;odl.sysworks.biz&#x2F;disk$axpdocdec971&#x2F;progtool&#x2F;deccv56&#x2F;5763profile0111.html#creat_routine\" rel=\"nofollow\">http:&#x2F;&#x2F;odl.sysworks.biz&#x2F;disk$axpdocdec971&#x2F;progtool&#x2F;deccv56&#x2F;5...</a>",
+    "time": 1660572338,
+    "type": "comment"
+  },
+  "32471464": {
+    "by": "aaaaaaaaaaab",
+    "id": 32471464,
+    "parent": 32468880,
+    "text": "This sentence says it all:<p>&gt;\u201cNormal files\u201d have data in EBCDIC",
+    "time": 1660579719,
+    "type": "comment"
+  },
+  "32473462": {
+    "by": "mananaysiempre",
+    "id": 32473462,
+    "parent": 32472252,
+    "text": "Right, by \u201cUTF-8 Win32\u201d I mean the *A Win32 functions (as used by the non-wide functions in the Microsoft C runtime) when a UTF-8 code page is active. Rust uses the *W ones instead.<p>As being prepared for invalid UTF-8 on Unix, well, it depends. If you refuse to run with non-UTF-8 LC_CTYPE or to accept invalid UTF-8 in user-provided file names, I suppose that\u2019s on you. (Though I sure hope you are not writing an implementation of rm or tar!) If you\u2019re trying to erase or move everything in a directory, though, you\u2019ll have to either deal with whatever\u2019s there or at least recognize that the action may fail.",
+    "time": 1660588189,
+    "type": "comment"
+  },
+  "32469796": {
+    "by": "jefftk",
+    "id": 32469796,
+    "kids": [
+      32470806,
+      32472087,
+      32470180,
+      32471527
+    ],
+    "parent": 32468849,
+    "text": "APIs don&#x27;t do well with &quot;probably&quot;.  For example, say you&#x27;re working with a language (Python, Rust, etc) that distinguishes between utf-8 strings and byte strings.  You&#x27;re making an API for listing a directory: it gives you an array of strings but what kind should they be?<p>(Python&#x27;s approach is that os.listdir(&quot;&#x2F;&quot;) gives you a List[str] (silently omitting undecodable entries), while os.listdir(b&quot;&#x2F;&quot;) gives you a List[bytes].  That is, if you give the path as a utf-8 string it returns utf-8 strings, otherwise it returns bytes.)",
+    "time": 1660572082,
+    "type": "comment"
+  },
+  "32468653": {
+    "by": "anonymoushn",
+    "id": 32468653,
+    "kids": [
+      32468739
+    ],
+    "parent": 32468441,
+    "text": "That is in fact what he does in the article!",
+    "time": 1660565497,
+    "type": "comment"
+  },
+  "32468402": {
+    "by": "anonymoushn",
+    "id": 32468402,
+    "kids": [
+      32468535
+    ],
+    "parent": 32468372,
+    "text": "That doesn&#x27;t seem to be part of the C standard library.",
+    "time": 1660563686,
+    "type": "comment"
+  },
+  "32469215": {
+    "by": "Calavar",
+    "id": 32469215,
+    "kids": [
+      32475438
+    ],
+    "parent": 32468688,
+    "text": "The 2nd Edition was published in 1988. I would guess that this this 2012 version just adds an extra foreword and some errata?",
+    "time": 1660569113,
+    "type": "comment"
+  },
+  "32473342": {
+    "by": "SAI_Peregrinus",
+    "id": 32473342,
+    "parent": 32468688,
+    "text": "&quot;Modern C&quot; by Jens Gustedt is an excellent book on a more modern approach to C.",
+    "time": 1660587616,
+    "type": "comment"
+  },
+  "32474156": {
+    "by": "adhesive_wombat",
+    "id": 32474156,
+    "parent": 32470716,
+    "text": "I&#x27;d say that&#x27;s more true if you&#x27;ve been handed a strange new micro with a unique architecture and an untried toolchain.<p>Make your rope as best you can but once you jump it&#x27;s up to luck and whether the gods are feeling beneficent if you survive, and if you do, if you still have your limbs and retinas attached.",
+    "time": 1660591681,
+    "type": "comment"
+  },
+  "32475292": {
+    "by": "Joker_vD",
+    "id": 32475292,
+    "parent": 32472531,
+    "text": "Well, as I said, you can pass pretty much whatever, none of those bits (except the owner-writeable bit) do anything because Windows uses a fundamentally different model of access control. And no, Golang&#x27;s os.Create() passes 0666 to os.OpenFile [0], just as fopen(3) passes 0666 to creat(2) [1] <i>on Linux</i> as well.<p>[0] <a href=\"https:&#x2F;&#x2F;cs.opensource.google&#x2F;go&#x2F;go&#x2F;+&#x2F;refs&#x2F;tags&#x2F;go1.19:src&#x2F;os&#x2F;file.go;drc=b72a6a7b868deb5b671020c08fbf8d61ad8803d4;l=326\" rel=\"nofollow\">https:&#x2F;&#x2F;cs.opensource.google&#x2F;go&#x2F;go&#x2F;+&#x2F;refs&#x2F;tags&#x2F;go1.19:src&#x2F;os...</a><p>[1] <a href=\"https:&#x2F;&#x2F;linux.die.net&#x2F;man&#x2F;3&#x2F;fopen\" rel=\"nofollow\">https:&#x2F;&#x2F;linux.die.net&#x2F;man&#x2F;3&#x2F;fopen</a>",
+    "time": 1660597127,
+    "type": "comment"
+  },
+  "32475487": {
+    "by": "Joker_vD",
+    "id": 32475487,
+    "parent": 32473217,
+    "text": "Oh for the... we had non-hierarchical file systems already, thank you very much. It&#x27;s what OS&#x2F;360 used. It&#x27;s what Apple Macintosh did (and yes, Macintosh Finder faked the hierarchy on top of it, just as you propose). And they&#x27;re not gone, Amazon S3 essentially is one.<p>And I remember that I half-jokingly proposed in some other discussion about file paths to either remove the filenames entirely or at least lift the uniqueness restriction: after all, if you have a GUI, files with the same name don&#x27;t cause that much of a trouble.",
+    "time": 1660598176,
+    "type": "comment"
+  },
+  "32488045": {
+    "by": "salawat",
+    "id": 32488045,
+    "parent": 32473217,
+    "text": "Symlinks are actually a tricky thing.<p><pre><code>  ln -s &#x2F;a&#x2F;long_contrived path&#x2F;somewhere_else .&#x2F;here\n  cd .&#x2F;here # cwd somewhere_else\n  ls -al ..&#x2F;.. #list contents of &#x2F;a\n  cd .. # cwd back to here (possibly shell-dependent)\n</code></pre>\nThe joys of impedance mismatch, and the angst of more easily frustrated users everywhere.<p>This is one of the many searching for data&#x2F;pathing based things that trips up most users, without fail, who have better things to do with their lives than internalize the madness of software developers, necessitating people like me to clean up after you heathens when you shine a turd.<p>Yes. Very shiny and efficient. Still a turd.<p>We need to build things that intuitively map through things they are well equipped to deal with, which means sometimes stepping away from the screen for a while. Cognitive load is the enemy. Any idiot can make a more complicated system. It&#x27;s about building and leveraging mental spaces, and being able to wire into a skill every other human being will share in their lifetime.<p>We should endeavor to have computer use not condition the user in a maladaptive way to real life. I assure you, we&#x27;ve failed epically, even in or brightest moments.",
+    "time": 1660680014,
+    "type": "comment"
+  },
+  "32475395": {
+    "by": "mek6800d2",
+    "id": 32475395,
+    "parent": 32469844,
+    "text": "But it works well!  Those file options are syntactically optional.  I worked on VAX&#x2F;VMS with Fortran for 5 years and then helped develop generic spacecraft control-center software for NASA in C under Unix.  In 1992-1993, we ported the system to VAX&#x2F;VMS for a European Space Agency project.  It went very smoothly and quickly, thanks to DEC&#x27;s largely complete implementation of the C library (including BSD networking), leaving us with plenty of time to develop the project-specific software.  I ported over Sun&#x27;s rpcgen and GNU&#x27;s flex and cccp; plus bison or an actual yacc.  As you showed, some of the C calls have optional parameters; e.g., strerror() could take an additional argument, a VMS status code, that would provide a more specific error message than just the ERRNO-based messages.  However, in almost all cases, the normal Unix call signatures worked as expected.  (I did have to come up with a work-around for our one case of a network server using fork().)  Thumbs up on VMS and C!",
+    "time": 1660597682,
+    "type": "comment"
+  },
+  "32470806": {
+    "by": "tialaramex",
+    "id": 32470806,
+    "kids": [
+      32471041
+    ],
+    "parent": 32469796,
+    "text": "If it&#x27;s an API for &quot;listing a directory&quot; the things in it aren&#x27;t strings they&#x27;re paths, and Rust indeed gives you Paths here (actually PathBufs in case you want to do stuff to them)<p>Paths <i>might</i> just be strings, but they aren&#x27;t necessarily, and since Rust actually cares about types if you want strings you need to write the code to decide what to do about this, even if your &quot;It&#x27;s not UTF-8&quot; case is just &quot;Give up I can&#x27;t be bothered&quot;.",
+    "time": 1660576795,
+    "type": "comment"
+  },
+  "32472087": {
+    "by": "nerdponx",
+    "id": 32472087,
+    "kids": [
+      32473436,
+      32472316
+    ],
+    "parent": 32469796,
+    "text": "Nitpick: Python strings are not &quot;UTF-8&quot;; they are abstract sequences of Unicode codepoints (and internally CPython stores UTF-32). However, UTF-8 <i>is</i> the default encoding for processing raw bytes received from the outside world and turning them into strings.<p>That said, I actually didn&#x27;t realize that os.listdir() silently omits un-decodable entries, which I find mildly alarming. This behavior isn&#x27;t mentioned in the docs (<a href=\"https:&#x2F;&#x2F;docs.python.org&#x2F;3&#x2F;library&#x2F;os.html#os.listdir\" rel=\"nofollow\">https:&#x2F;&#x2F;docs.python.org&#x2F;3&#x2F;library&#x2F;os.html#os.listdir</a>) and seems out-of-character for Python, which usually raises an exception by default if data cannot be decoded to text.<p>Are you sure that this is actually what happens with non-decodable filenames? Reading here (<a href=\"https:&#x2F;&#x2F;docs.python.org&#x2F;3&#x2F;glossary.html#term-filesystem-encoding-and-error-handler\" rel=\"nofollow\">https:&#x2F;&#x2F;docs.python.org&#x2F;3&#x2F;glossary.html#term-filesystem-enco...</a>) and here (<a href=\"https:&#x2F;&#x2F;docs.python.org&#x2F;3&#x2F;c-api&#x2F;init_config.html#c.PyConfig.filesystem_errors\" rel=\"nofollow\">https:&#x2F;&#x2F;docs.python.org&#x2F;3&#x2F;c-api&#x2F;init_config.html#c.PyConfig....</a>), it suggests that encoding errors should be handled by surrogate escapes by default on non-Windows systems.",
+    "time": 1660582172,
+    "type": "comment"
+  },
+  "32470180": {
+    "by": "jcranmer",
+    "id": 32470180,
+    "kids": [
+      32470344,
+      32471715,
+      32470533
+    ],
+    "parent": 32469796,
+    "text": "Honestly? Convince operating systems to have a switch that enforces UTF-8 path names, and then convince distros to flip that switch by default for new installs. That is to say, we need to move the world from a <i>probably</i> to a <i>definitely</i> state.<p>The reality is that file names are &quot;stringy&quot; in nature--people expect to be able to do display them--and that means you need to have some up-front agreement on how to interpret those strings. In practice, on Unix systems, everyone has generally agreed that this is UTF-8, to the point that trying to not be UTF-8 generally causes interesting breaks in the system. It would be great if we could actually get the operating system to help enforce these rules, rather than placing the blame on other software for not correctly handling situations where the correct solution is itself incredibly ambiguous.",
+    "time": 1660574008,
+    "type": "comment"
+  },
+  "32471527": {
+    "by": "naniwaduni",
+    "id": 32471527,
+    "kids": [
+      32471616
+    ],
+    "parent": 32469796,
+    "text": "They should be byte (or 16-bit code unit, or whatever) strings. There is no ambiguity here, only incompatibility and delusion.<p>Rust gets this almost right. Python gets this very wrong.",
+    "time": 1660579980,
+    "type": "comment"
+  },
+  "32468739": {
+    "by": "phao",
+    "id": 32468739,
+    "kids": [
+      32468893
+    ],
+    "parent": 32468653,
+    "text": "Right, but is he relying on the standard (the C language specification is an ISO standard, btw) behavior guaranteed by the language? Or is it talking about some implementation specific behavior that also happens to fall into the name of fopen, fread, etc?<p>For C programmers, talking about &quot;standard&quot; implies a quite particular meaning.",
+    "time": 1660566074,
+    "type": "comment"
+  },
+  "32468535": {
+    "deleted": true,
+    "id": 32468535,
+    "parent": 32468402,
+    "time": 1660564508,
+    "type": "comment"
+  },
+  "32475438": {
+    "by": "atoav",
+    "id": 32475438,
+    "parent": 32469215,
+    "text": "Ah that explains a lot thanks",
+    "time": 1660597892,
+    "type": "comment"
+  },
+  "32471041": {
+    "by": "jefftk",
+    "id": 32471041,
+    "parent": 32470806,
+    "text": "Yes, Rust in keeping with its aesthetic resolves the &quot;probably&quot; in the most pessimistic direction, and requires you to explicitly say how you want to handle the potential for non-utf8.",
+    "time": 1660577832,
+    "type": "comment"
+  },
+  "32473436": {
+    "by": "fabioz",
+    "id": 32473436,
+    "kids": [
+      32477254
+    ],
+    "parent": 32472087,
+    "text": "Just as a note, the way that Python stores the items isn&#x27;t always 4 bytes per char, it depends on the actual string contents.<p>I think that <a href=\"https:&#x2F;&#x2F;rushter.com&#x2F;blog&#x2F;python-strings-and-memory&#x2F;\" rel=\"nofollow\">https:&#x2F;&#x2F;rushter.com&#x2F;blog&#x2F;python-strings-and-memory&#x2F;</a> is a nice reference on that.",
+    "time": 1660588080,
+    "type": "comment"
+  },
+  "32472316": {
+    "by": "jefftk",
+    "id": 32472316,
+    "kids": [
+      32472574
+    ],
+    "parent": 32472087,
+    "text": "I&#x27;m wrong: <a href=\"https:&#x2F;&#x2F;news.ycombinator.com&#x2F;item?id=32471944\" rel=\"nofollow\">https:&#x2F;&#x2F;news.ycombinator.com&#x2F;item?id=32471944</a><p>If it ever did that, it doesn&#x27;t anymore.",
+    "time": 1660583105,
+    "type": "comment"
+  },
+  "32470344": {
+    "by": "Joker_vD",
+    "id": 32470344,
+    "parent": 32470180,
+    "text": "While I am all for an OS monoculture, it&#x27;s still not there yet... and besides, <i>my</i> idea of what OS precisely must be the sole survivor is different from yours, and yours is different from somebody else&#x27;s, etc.<p>So I am afraid we can either a) indulge ourselves in wishful thinking, b) actively try to extinguish platforms that don&#x27;t match our ideals, c) make an effort to be actually cross-platform, and not in &quot;let&#x27;s just build a tiny Linux model in a bottle for us to use and pretend the rest of the environment is not there&quot; kind.",
+    "time": 1660574788,
+    "type": "comment"
+  },
+  "32471715": {
+    "by": "tpolzer",
+    "id": 32471715,
+    "parent": 32470180,
+    "text": "You can use ZFS as a root file system, and it actually has such a switch (called &quot;utf8only&quot;).",
+    "time": 1660580760,
+    "type": "comment"
+  },
+  "32470533": {
+    "by": "jefftk",
+    "id": 32470533,
+    "kids": [
+      32471810
+    ],
+    "parent": 32470180,
+    "text": "On a system with that switch flipped, what should happen if you plug in a USB drive or untar an archive that has non-utf8 filenames?",
+    "time": 1660575634,
+    "type": "comment"
+  },
+  "32471616": {
+    "by": "jefftk",
+    "id": 32471616,
+    "kids": [
+      32471944,
+      32472129
+    ],
+    "parent": 32471527,
+    "text": "<i>&gt; Rust gets this almost right. Python gets this very wrong.</i><p>Having worked in both, I&#x27;d say they both chose ideomatic solutions:<p>Rust: I can&#x27;t prove this is utf-8, so if you want to use it as utf-8 you&#x27;ll need to tell me what to do if it isn&#x27;t.<p>Python: if you&#x27;re in the common situation where everything is utf-8 and you want to just work with strings, go do the simple thing.  Or you can be explicit about wanting to work with bytes, and that&#x27;s good too.<p>(Though I think Python should throw an error instead of silently omitting non-utf8 files.)",
+    "time": 1660580347,
+    "type": "comment"
+  },
+  "32468893": {
+    "by": "anonymoushn",
+    "id": 32468893,
+    "kids": [
+      32472701,
+      32472517
+    ],
+    "parent": 32468739,
+    "text": "I did not purchase a C standard from ISO, but a draft specifies that text streams and binary streams are both supported, and that text streams may perform all sorts of implementation-defined destruction on your data. Some small part of the article seems to be related to this.",
+    "time": 1660567120,
+    "type": "comment"
+  },
+  "32477254": {
+    "by": "nerdponx",
+    "id": 32477254,
+    "parent": 32473436,
+    "text": "Interesting and good to know! CPython is really quite impressive with all of these little optimizations.",
+    "time": 1660607274,
+    "type": "comment"
+  },
+  "32472574": {
+    "by": "jefftk",
+    "id": 32472574,
+    "parent": 32472316,
+    "text": "Found some history: <a href=\"https:&#x2F;&#x2F;vstinner.github.io&#x2F;python30-listdir-undecodable-filenames.html\" rel=\"nofollow\">https:&#x2F;&#x2F;vstinner.github.io&#x2F;python30-listdir-undecodable-file...</a><p>Includes &quot;Modify os.listdir(str) to ignore silently undecodable filenames, instead of returning them as bytes&quot;, but not later work where apparently this was changed to use surrogates.",
+    "time": 1660584347,
+    "type": "comment"
+  },
+  "32471810": {
+    "by": "deathanatos",
+    "id": 32471810,
+    "parent": 32470533,
+    "text": "For a legacy&#x2F;broken FS that permits non-utf8 filenames, and has them: have the FS driver map them into UTF-8 as best it can by making some sort of compromise. E.g., use the PUA to map malformed sequences in&#x2F;out.<p>For untar&#x27;ing a tar archive: error out by default, but provide a flag or option to permit untarring using some sort of escaping to map the malformed names back into Unicode. I think here I&#x27;d map to something printable, though, like &quot;\\xnn&quot; or something.",
+    "time": 1660581161,
+    "type": "comment"
+  },
+  "32471944": {
+    "by": "jefftk",
+    "id": 32471944,
+    "kids": [
+      32472170
+    ],
+    "parent": 32471616,
+    "text": "Actually, I think I&#x27;m wrong about python&#x27;s behavior, at least now; it doesn&#x27;t omit the files, and instead does something with surrogates.  On Linux:<p><pre><code>    &gt;&gt;&gt; b&#x27;\\xc0&#x27;.decode(&#x27;utf-8&#x27;)\n    Traceback (most recent call last):\n      File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;\n    UnicodeDecodeError: &#x27;utf-8&#x27; codec can&#x27;t decode byte 0xc0 in position 0: invalid start byte\n    &gt;&gt;&gt; open(b&#x27;\\xc0&#x27;, &#x27;w&#x27;).write(&#x27;foo&#x27;)\n    3\n    &gt;&gt;&gt; os.listdir()\n    [&#x27;\\udcc0&#x27;]\n    &gt;&gt;&gt; open(b&#x27;\\xc0&#x27;).read()\n    &#x27;foo&#x27;\n    &gt;&gt;&gt; open(&#x27;\\udcc0&#x27;).read()\n    &#x27;foo&#x27;</code></pre>",
+    "time": 1660581649,
+    "type": "comment"
+  },
+  "32472129": {
+    "by": "nerdponx",
+    "id": 32472129,
+    "parent": 32471616,
+    "text": "I just did a bit of research into this here <a href=\"https:&#x2F;&#x2F;news.ycombinator.com&#x2F;item?id=32472087\" rel=\"nofollow\">https:&#x2F;&#x2F;news.ycombinator.com&#x2F;item?id=32472087</a><p>You <i>can</i> actually reconfigure Python to throw an error instead of using a surrogate escape, but only (I think) changing something at compile time: <a href=\"https:&#x2F;&#x2F;docs.python.org&#x2F;3&#x2F;library&#x2F;sys.html#sys.getfilesystemencodeerrors\" rel=\"nofollow\">https:&#x2F;&#x2F;docs.python.org&#x2F;3&#x2F;library&#x2F;sys.html#sys.getfilesystem...</a>",
+    "time": 1660582323,
+    "type": "comment"
+  },
+  "32472701": {
+    "by": "phao",
+    "id": 32472701,
+    "parent": 32468893,
+    "text": "About drafts...<p>Iirc, the last draft before final publication is free and it&#x27;s just as good.<p>As another user replied, there is more going on in the post than what is specified, guaranteed, etc, by the standard.<p>The practice of C programming in an actual system using non-standard things is important. Also, the C language does have its problems, even within the standard. However, pinning to C problems of a not-so-helpful implementation, library, system, etc, is unfair and unhelpful I believe.",
+    "time": 1660584844,
+    "type": "comment"
+  },
+  "32472517": {
+    "by": "bregma",
+    "id": 32472517,
+    "parent": 32468893,
+    "text": "The streams discussed in the article are neither text nor binary. They&#x27;re record-oriented files, which are not supported by the C language standard. Operations on record-oriented files are a vendor extension that work however the vendor says they work.<p>On the other hand, record-oriented files work just peachy with ISO standard COBOL.",
+    "time": 1660584045,
+    "type": "comment"
+  },
+  "32472170": {
+    "by": "naniwaduni",
+    "id": 32472170,
+    "parent": 32471944,
+    "text": "PEP 383[1] is a workaround, but it took a while to get there[2].<p>[1]: <a href=\"https:&#x2F;&#x2F;peps.python.org&#x2F;pep-0383&#x2F;\" rel=\"nofollow\">https:&#x2F;&#x2F;peps.python.org&#x2F;pep-0383&#x2F;</a>\n[2]: cf. <a href=\"https:&#x2F;&#x2F;github.com&#x2F;bup&#x2F;bup&#x2F;blob&#x2F;master&#x2F;DESIGN#L667-L729\" rel=\"nofollow\">https:&#x2F;&#x2F;github.com&#x2F;bup&#x2F;bup&#x2F;blob&#x2F;master&#x2F;DESIGN#L667-L729</a>",
+    "time": 1660582478,
+    "type": "comment"
+  }
+}

@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+c_harness
+*.o
+/tmp/
+*.tmp
