@@ -165,14 +165,13 @@ with out_csv.open("w", newline="") as f:
     w.writeheader(); w.writerows(rows)
 pathlib.Path("results_rows.json").write_text(json.dumps(rows, indent=2))
 
-# RESULTS.md
+
+# RESULTS.md - table formatted
 harness_size = harness_c.stat().st_size if harness_c.exists() else 0
 cases_size = cases_path.stat().st_size
 binary_size = os.path.getsize(binary_path) if os.path.exists(binary_path) else 0
 elapsed_total = time.perf_counter() - start_wall
 current, peak = tracemalloc.get_traced_memory()
-
-# count fixture bytes
 fixtures_dir = pathlib.Path("fixtures")
 fixture_bytes_total = sum(p.stat().st_size for p in fixtures_dir.glob("*")) if fixtures_dir.exists() else 0
 
@@ -180,75 +179,101 @@ c_validated = compile_ok and os.path.exists(binary_path) and binary_size > 0
 result_scope_note = "compiler-backed C execution results" if c_validated else "Python policy-observer results, NOT compiler-backed C execution results"
 harness_status_note = "compiled and executed" if c_validated else "source committed, NOT compiler-validated – no compiler was available"
 
+# build naive failure table rows
+naive_fail_rows = []
+for r in rows:
+    if r["method_key"] == "naive" and r["naive_expected_fail"] and not r["passed"]:
+        # find the case
+        case = next((c for c in cases if c["id"] == r["case_id"]), None)
+        obs = case["expected_obs"] if case else ""
+        cat = case["category"] if case else ""
+        naive_fail_rows.append((r["case_id"], obs, cat))
+
 with open("RESULTS.md","w") as f:
     f.write("# c-stdlib-file-io-footgun-lab RESULTS\n\n")
-    f.write(f"**Claim precision:** pass/fail/skip counts below are **{result_scope_note}**.")
-    if not c_validated:
-        f.write(" The C harness source (`c_file_io_footgun_harness.c`) is committed but was **NOT compiler-validated** in this run.\n\n")
-    else:
-        f.write("\n\n")
-    f.write(f"compiler_selected: {compiler_name}\n")
-    f.write(f"compiler_path: {compiler_path}\n")
-    f.write(f"compiler_version: {compiler_version}\n")
-    f.write(f"compile_command: {compile_cmd}\n")
-    f.write(f"compile_ok: {compile_ok}\n")
-    f.write(f"compile_elapsed: {compile_elapsed:.4f}s\n")
-    f.write(f"harness_elapsed: {harness_elapsed:.4f}s\n\n")
-    f.write(f"**C harness status: {harness_status_note}.**\n\n")
-    if not c_validated:
-        f.write("**Do NOT claim C API observations executed.**\n\n")
-    f.write(f"case_count: {len(cases)}\n")
-    f.write(f"method_count: {len(methods)}\n")
-    f.write(f"pass_count: {pass_count}\n")
-    f.write(f"fail_count: {fail_count}\n")
-    f.write(f"skip_count: {skip_count}\n")
-    f.write(f"naive_expected_fail_count: {naive_expected_fail_count}\n\n")
-    f.write("## counts by method\n")
+    f.write(f"**Claim precision:** pass/fail/skip counts below are **{result_scope_note}**.\n\n")
+    f.write("## Build Info\n\n")
+    f.write("| Field | Value |\n|---|---|\n")
+    f.write(f"| compiler | {compiler_name or 'None'} |\n")
+    f.write(f"| compiler_path | `{compiler_path}` |\n")
+    f.write(f"| compiler_version | {compiler_version} |\n")
+    f.write(f"| compile_command | `{compile_cmd}` |\n")
+    f.write(f"| compile_ok | {'✅ true' if compile_ok else '❌ false'} |\n")
+    f.write(f"| compile_elapsed | {compile_elapsed:.4f}s |\n")
+    f.write(f"| harness_elapsed | {harness_elapsed:.4f}s |\n")
+    f.write(f"| c_harness_status | {harness_status_note} |\n\n")
+    f.write("## Results Summary\n\n")
+    f.write("| Metric | Count |\n|---|---|\n")
+    f.write(f"| case_count | {len(cases)} |\n")
+    f.write(f"| method_count | {len(methods)} |\n")
+    f.write(f"| pass_count | {pass_count} |\n")
+    f.write(f"| fail_count | {fail_count} |\n")
+    f.write(f"| skip_count | {skip_count} |\n")
+    f.write(f"| naive_expected_fail_count | {naive_expected_fail_count} |\n\n")
+    f.write("## Per-Method Breakdown\n\n")
+    f.write("| Method | Passed | Key |\n|---|---|---|\n")
     for mname, mkey, _ in methods:
         cnt = sum(1 for r in rows if r["method_key"]==mkey and r["passed"])
-        f.write(f"- {mname}: {cnt}\n")
-    f.write("\n## artifacts\n")
-    f.write(f"- cases.json: {cases_size} bytes\n")
-    f.write(f"- fixtures/: {fixture_bytes_total} bytes total\n")
-    f.write(f"- c_file_io_footgun_harness.c: {harness_size} bytes\n")
-    f.write(f"- compiled binary: {binary_size} bytes\n")
-    f.write(f"- results_rows.csv / results_rows.json\n\n")
-    f.write("## environment\n")
-    f.write(f"- python: {platform.python_version()}\n")
-    f.write(f"- platform: {platform.platform()}\n")
-    f.write(f"- timing: time.perf_counter\n")
-    f.write(f"- total_elapsed: {elapsed_total:.4f}s\n\n")
-    f.write("## scope / honesty\n")
-    f.write("- HN-thread-access: yes, via Hacker News API CLI, thread id 32467610\n")
-    f.write("  - committed evidence: `hn_thread_evidence.md`, `hn_comments_sanitized.txt`, `hn_nodes_sanitized.json`\n")
-    f.write("- network/API/package-manager during benchmark: none, except HN fetch beforehand\n")
-    f.write("- undefined-behavior-not-run: yes – invalid FILE*, use-after-fclose, OOB reads/writes, attacker paths – all not run\n")
-    f.write("- file-io-scope: toy local lab, Python policy observers")
-    if c_validated: f.write(" + C harness execution\n")
-    else: f.write(" + C harness source (NOT compiler-validated)\n")
-    if not c_validated:
-        f.write(f"- **C harness compile/run status: NOT validated – no compiler available**\n")
-        f.write(f"- **pass/fail/skip counts: Python policy-observer results only, NOT C execution results**\n")
-    f.write("- portability-not-tested: z/OS, EBCDIC, Windows wide paths, POSIX read/open – marked not_tested\n")
-    f.write("- production-parser-not-tested: CSV/config/log parsing, Unicode decoding, locale databases – marked not_tested\n")
-    f.write("- no z/OS, no IBM runtime, no Windows APIs, no fuzzing, no sanitizers, no static analyzers\n\n")
-    f.write("## conclusions\n\n")
+        f.write(f"| {mname} | {cnt} | {mkey} |\n")
+    f.write("\n## Naive Failures (Expected)\n\n")
+    if naive_fail_rows:
+        f.write("| Case ID | Observation | Category |\n|---|---|---|\n")
+        for cid, obs, cat in naive_fail_rows:
+            f.write(f"| {cid} | {obs} | {cat} |\n")
+    else:
+        f.write("_None_\n")
+    f.write("\n## Skip Matrix\n\n")
+    f.write("| Reason | Count |\n|---|---|\n")
+    f.write(f"| Total skipped | {skip_count} |\n")
+    f.write("| UB not run | ~ | invalid FILE*, use-after-fclose, OOB – marked skip |\n")
+    f.write("| Portability not tested | ~ | z/OS, EBCDIC, Windows wide paths, POSIX read/open, locale |\n")
+    f.write("| Production parser not tested | ~ | CSV/config/log parsing, Unicode decoding |\n")
+    f.write("| Method not applicable | ~ | per-method case filtering |\n\n")
+    f.write("## Artifacts\n\n")
+    f.write("| File | Size | Description |\n|---|---|---|\n")
+    f.write(f"| `cases.json` | {cases_size} bytes | {len(cases)} test cases |\n")
+    f.write(f"| `fixtures/` | {fixture_bytes_total} bytes | synthetic fixture files |\n")
+    f.write(f"| `c_file_io_footgun_harness.c` | {harness_size} bytes | C harness source |\n")
+    f.write(f"| `c_harness` (compiled) | {binary_size} bytes | {'zig cc build' if c_validated else 'not built'} |\n")
+    f.write("| `results_rows.csv` | – | per-case/per-method CSV |\n")
+    f.write("| `results_rows.json` | – | per-case/per-method JSON |\n\n")
+    f.write("## Environment\n\n")
+    f.write("| Field | Value |\n|---|---|\n")
+    f.write(f"| python | {platform.python_version()} |\n")
+    f.write(f"| platform | {platform.platform()} |\n")
+    f.write(f"| timing | time.perf_counter |\n")
+    f.write(f"| total_elapsed | {elapsed_total:.4f}s |\n\n")
+    f.write("## Scope / Honesty\n\n")
+    f.write("| Claim | Status | Evidence |\n|---|---|---|\n")
+    f.write("| HN thread accessed | ✅ yes | Thread 32467610 via HN API CLI |\n")
+    f.write("| HN evidence committed | ✅ yes | `hn_thread_evidence.md`, `hn_comments_sanitized.txt`, `hn_nodes_sanitized.json` |\n")
+    f.write("| Network during benchmark | ❌ none | HN fetch beforehand only |\n")
+    f.write("| UB cases executed | ❌ no | all marked skip/not_run |\n")
+    f.write(f"| C harness validated | {'✅ yes' if c_validated else '❌ no'} | {'zig cc 0.14.1' if c_validated else 'no compiler available'} |\n")
+    f.write("| z/OS / EBCDIC tested | ❌ no | marked `portability_not_tested` |\n")
+    f.write("| Windows wide paths tested | ❌ no | marked `portability_not_tested` |\n")
+    f.write("| Production parsers tested | ❌ no | marked `not_tested` |\n")
+    f.write("| Fuzzing / sanitizers | ❌ no | out of scope |\n\n")
+    f.write("## Conclusions\n\n")
     if not c_validated:
         f.write("All conclusions below are derived from **Python policy-observer results and HN thread sentiment analysis**, NOT from compiler-backed C execution.\n\n")
-    f.write("- fread returns completed items, not necessarily bytes – size/nmemb semantics matter (HN + ISO C).\n")
-    f.write("- fgets returns a C string, may retain newline, truncate long lines, stop at embedded NUL in later string processing.\n")
-    f.write("- EOF is discovered by attempting a read, NOT by pre-checking feof – feof-before-read is a footgun.\n")
-    f.write("- feof and ferror are separate states, must be checked after a failed/short read.\n")
-    f.write("- fgetc returns int so EOF can be represented separately from unsigned char byte values.\n")
-    f.write("- text vs binary mode differences are implementation-defined / platform-specific – do NOT overclaim.\n")
-    f.write("- file paths and file contents are different byte/text policy problems.\n")
-    f.write("- z/OS record-oriented files are useful context but NOT reproduced locally (IBM vendor extension, not ISO C).\n")
-    f.write("- path encoding: Unix byte paths, Windows wide paths, UTF-8 assumptions, Rust PathBuf/OsString, Python surrogate escapes – came up heavily in HN thread.\n")
-    f.write("- project-local file-read wrappers and read_result structs came up as practical policy.\n")
-    f.write("- naive methods (feof-before-read, fread returns bytes, fgets always whole line, strlen for binary length, EOF==error, text==binary everywhere, paths always UTF-8) fail expected cases.\n")
-    f.write("- this toy lab does NOT prove production input safety, z/OS behavior, POSIX behavior, Windows path behavior, locale/encoding behavior, etc.\n")
+    conclusions = [
+        "fread returns completed items, not necessarily bytes – size/nmemb semantics matter (HN + ISO C).",
+        "fgets returns a C string, may retain newline, truncate long lines, stop at embedded NUL in later string processing.",
+        "EOF is discovered by attempting a read, NOT by pre-checking feof – feof-before-read is a footgun.",
+        "feof and ferror are separate states, must be checked after a failed/short read.",
+        "fgetc returns int so EOF can be represented separately from unsigned char byte values.",
+        "text vs binary mode differences are implementation-defined / platform-specific – do NOT overclaim.",
+        "file paths and file contents are different byte/text policy problems.",
+        "z/OS record-oriented files are useful context but NOT reproduced locally (IBM vendor extension, not ISO C).",
+        "path encoding: Unix byte paths, Windows wide paths, UTF-8 assumptions, Rust PathBuf/OsString, Python surrogate escapes – came up heavily in HN thread.",
+        "project-local file-read wrappers and read_result structs came up as practical policy.",
+        "naive methods (feof-before-read, fread-returns-bytes, fgets-always-whole-line, strlen-for-binary-length, EOF==error, text==binary-everywhere, paths-always-UTF-8) fail expected cases.",
+        "this toy lab does NOT prove production input safety, z/OS behavior, POSIX behavior, Windows path behavior, locale/encoding behavior, etc.",
+    ]
+    for c in conclusions:
+        f.write(f"- {c}\n")
     if not c_validated:
         f.write("- **C harness source is committed but was NOT compiler-validated in this run – claims about C API behavior are based on ISO C documentation and HN thread discussion, validated via Python policy observers only.**\n")
-
 print("wrote RESULTS.md, results_rows.csv/json")
 print({"pass_count":pass_count,"fail_count":fail_count,"skip_count":skip_count,"naive_expected_fail_count":naive_expected_fail_count,"case_count":len(cases),"method_count":len(methods),"compiler":compiler_name,"compile_ok":compile_ok})
